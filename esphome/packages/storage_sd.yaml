@@ -1,0 +1,12 @@
+spi:
+  - id: sd_spi
+    clk_pin: GPIO40
+    mosi_pin: GPIO41
+    miso_pin: GPIO42
+
+sd_card:
+  spi_id: sd_spi
+  cs_pin: GPIO13
+  id: sd_storage
+  card_mount_point: /sdcard
+  format_on_mount: false

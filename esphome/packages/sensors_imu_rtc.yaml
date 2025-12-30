@@ -1,0 +1,25 @@
+i2c:
+  - id: main_i2c
+    sda: GPIO10
+    scl: GPIO11
+    scan: true
+    frequency: 400kHz
+
+sensor:
+  - platform: qmi8658
+    i2c_id: main_i2c
+    address: 0x6B
+    interrupt_pin: GPIO9
+    update_interval: 200ms
+    acceleration:
+      name: "${friendly_name} Acceleration"
+    gyroscope:
+      name: "${friendly_name} Gyroscope"
+    temperature:
+      name: "${friendly_name} IMU Temperature"
+
+time:
+  - platform: pcf85063
+    id: rtc_time
+    i2c_id: main_i2c
+    address: 0x51

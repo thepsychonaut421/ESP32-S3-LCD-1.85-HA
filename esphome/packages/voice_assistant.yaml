@@ -1,0 +1,13 @@
+voice_assistant:
+  id: ha_voice_assistant
+  microphone: onboard_mic
+  speaker: onboard_speaker
+  use_wake_word: true
+  auto_gain: 15dBFS
+  vad:
+    mode: very_aggressive
+
+wake_word:
+  - platform: default
+    id: default_wake_word_engine
+    active: true

@@ -1,0 +1,22 @@
+i2s_audio:
+  - id: i2s_in
+    i2s_lrclk_pin: GPIO2
+    i2s_bclk_pin: GPIO15
+  - id: i2s_out
+    i2s_lrclk_pin: GPIO38
+    i2s_bclk_pin: GPIO47
+
+microphone:
+  - platform: i2s_audio
+    id: onboard_mic
+    adc_type: external
+    i2s_audio_id: i2s_in
+    channel: left
+    i2s_din_pin: GPIO39
+
+speaker:
+  - platform: i2s_audio
+    id: onboard_speaker
+    i2s_audio_id: i2s_out
+    dac_type: external
+    i2s_dout_pin: GPIO48
