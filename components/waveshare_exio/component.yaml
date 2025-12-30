@@ -1,0 +1,8 @@
+name: waveshare_exio
+version: "0.1.0"
+files:
+  - waveshare_exio.cpp
+  - waveshare_exio.h
+  - __init__.py
+dependencies:
+  - i2c
