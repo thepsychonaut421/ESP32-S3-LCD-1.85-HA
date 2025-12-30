@@ -1,0 +1,8 @@
+name: st77916_qspi_display
+version: "0.1.0"
+files:
+  - st77916_qspi_display.cpp
+  - st77916_qspi_display.h
+  - __init__.py
+dependencies:
+  - display
