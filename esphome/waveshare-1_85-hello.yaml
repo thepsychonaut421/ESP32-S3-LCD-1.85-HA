@@ -1,0 +1,112 @@
+substitutions:
+  name: waveshare-s3-185
+  friendly_name: Waveshare S3 LCD 1.85
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  name_add_mac_suffix: false
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+
+psram:
+  mode: octal
+  speed: 80MHz
+
+logger:
+
+api:
+  encryption:
+    key: jNsXzDXC2jletGUpCFQ6kNjWOaCNisI4pzKiHTrxmkQ=
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "${friendly_name} Fallback"
+    password: "12345678"
+
+captive_portal:
+
+# I2C bus used by the PCA9554 IO expander
+i2c:
+  - id: i2c_main
+    sda: GPIO11
+    scl: GPIO10
+    scan: true
+
+# IO expander toggles the panel reset line
+pca9554:
+  - id: pca9554a_device
+    i2c_id: i2c_main
+
+# Backlight on GPIO5 driven via LEDC
+output:
+  - platform: ledc
+    pin: GPIO5
+    id: bl_pwm
+
+light:
+  - platform: monochromatic
+    id: display_backlight
+    output: bl_pwm
+    name: "${friendly_name} Backlight"
+    restore_mode: ALWAYS_ON
+
+# QSPI interface for the ST77916 panel
+spi:
+  id: display_qspi
+  type: quad
+  clk_pin: GPIO40
+  data_pins: [GPIO46, GPIO45, GPIO42, GPIO41]
+
+font:
+  - file: "gfonts://Roboto"
+    id: f_big
+    size: 28
+  - file: "gfonts://Roboto"
+    id: f_small
+    size: 16
+
+display:
+  - platform: qspi_dbi
+    id: main_display
+    model: CUSTOM
+    spi_id: display_qspi
+    color_order: rgb
+    dimensions:
+      height: 360
+      width: 360
+    cs_pin: GPIO21
+    reset_pin:
+      pca9554: pca9554a_device
+      number: 1
+    auto_clear_enabled: true
+    # Initialization sequence for the ST77916 on the Waveshare 1.85" board
+    init_sequence:
+      - [0xF0, 0x08]
+      - [0xF2, 0x08]
+      - [0x9B, 0x51]
+      - [0x86, 0x53]
+      - [0xF2, 0x80]
+      - [0xF0, 0x00]
+      - [0x11] # Sleep out
+      - delay 120ms
+      - [0x29] # Display on
+    lambda: |-
+      it.fill(Color(0, 0, 0));
+      it.printf(20, 30, id(f_big), Color(255, 255, 255), "Salut!");
+      it.printf(20, 80, id(f_small), Color(180, 180, 180), "Waveshare 1.85");
+      if (wifi::global_wifi_component->is_connected()) {
+        it.printf(20, 120, id(f_small), Color(120, 255, 120), "WiFi: OK");
+        it.printf(20, 145, id(f_small), Color(180, 180, 180), "IP: %s",
+                  wifi::global_wifi_component->get_ip_address().str().c_str());
+      } else {
+        it.printf(20, 120, id(f_small), Color(255, 120, 120), "WiFi: ...");
+      }
