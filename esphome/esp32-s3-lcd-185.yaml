@@ -1,0 +1,25 @@
+substitutions:
+  name: esp32-s3-lcd-185
+  friendly_name: ESP32-S3 LCD 1.85
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+esp32:
+  board: esp32-s3-devkitc-1
+  framework:
+    type: esp-idf
+
+packages:
+  base: !include packages/base.yaml
+  display: !include packages/display_st77916.yaml
+  audio: !include packages/audio_mic_speaker.yaml
+  sensors: !include packages/sensors_imu_rtc.yaml
+  storage: !include packages/storage_sd.yaml
+  voice: !include packages/voice_assistant.yaml
+
+captive_portal:
+
+web_server:
+  port: 80

@@ -1,0 +1,50 @@
+substitutions:
+  st77916_width: "480"
+  st77916_height: "480"
+
+spi:
+  - id: lcd_qspi
+    type: quad
+    clk_pin: GPIO7
+    data_pins:
+      - GPIO12
+      - GPIO13
+      - GPIO14
+      - GPIO16
+    cs_pin: GPIO6
+
+output:
+  - platform: ledc
+    id: lcd_backlight
+    pin: GPIO5
+    frequency: 1000 Hz
+
+light:
+  - platform: monochromatic
+    output: lcd_backlight
+    id: lcd_backlight_light
+    name: "${friendly_name} Backlight"
+    restore_mode: ALWAYS_ON
+
+font:
+  - file: "gfonts://Roboto"
+    id: lcd_font
+    size: 24
+
+display:
+  - platform: st7796
+    id: main_lcd
+    spi_id: lcd_qspi
+    model: "ST7796"
+    cs_pin: GPIO6
+    dc_pin: GPIO4
+    reset_pin: GPIO8
+    width: ${st77916_width}
+    height: ${st77916_height}
+    backlight_pin: GPIO5
+    rotation: 0
+    invert_colors: false
+    update_interval: 1s
+    lambda: |-
+      it.fill(COLOR_BLACK);
+      it.print(10, 10, id(lcd_font), Color::WHITE, "Hello");
